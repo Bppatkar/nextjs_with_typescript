@@ -2,8 +2,8 @@ export default function AboutLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div>this is ABout layout</div>
         {children}
+         <footer>Made by Bhanu Pratap © {new Date().getFullYear()}</footer>
       </body>
     </html>
   );
