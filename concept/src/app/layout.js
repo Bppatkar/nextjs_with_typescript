@@ -22,9 +22,9 @@ export default function RootLayout({ children, team, bhanu }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="grid grid-cols-3 min-h-screen text-white text-center items-center">
-          <div className="bg-neutral -800 border-r h-1/2">{children}</div>
-          <div className="bg-zinc-700 border-r h-1/2">{team}</div>
+        <div className="grid grid-cols-3 min-h-screen text-white text-center items-center ">
+          <div className="bg-neutral -800 ">{children}</div>
+          <div className="bg-zinc-700 ">{team}</div>
           <div className="bg-slate-800 ">{bhanu}</div>
         </div>
       </body>
