@@ -1,11 +1,10 @@
-# NextJS with Typescript
+# Next.js with TypeScript - Complete Learning Guide
 
-# Next.js Routing Guide - My Learning Journey
-
-A comprehensive guide covering Next.js App Router folder structure and routing concepts that I learned.
+A comprehensive guide covering Next.js App Router, TypeScript fundamentals, data fetching strategies, and API creation.
 
 ## 📚 Table of Contents
 
+### Next.js Fundamentals
 - [Folder Structure](#folder-structure)
 - [Special Files](#special-files)
 - [App Routing](#app-routing)
@@ -18,7 +17,34 @@ A comprehensive guide covering Next.js App Router folder structure and routing c
 - [Navigation](#navigation)
 - [Font Integration](#font-integration)
 - [Image Integration](#image-integration)
-- [Practice Setup](#practice-setup)
+
+### TypeScript Fundamentals
+- [What is TypeScript?](#what-is-typescript)
+- [Installation & Setup](#installation--setup)
+- [Basic Types](#basic-types)
+- [Arrays & Tuples](#arrays--tuples)
+- [Type Annotations](#type-annotations)
+- [Type Declaration & Type Inference](#type-declaration--type-inference)
+- [Union Types](#union-types)
+- [Functions](#functions)
+- [Objects & Interfaces](#objects--interfaces)
+- [Type Aliases](#type-aliases)
+- [Difference between Type & Interface](#difference-between-type--interface)
+- [Union & Intersection Types](#union--intersection-types)
+- [Enums](#enums)
+- [Generics](#generics)
+- [Global Declaration](#global-declaration)
+- [React with TypeScript](#react-with-typescript)
+- [React Types Reference](#react-types-reference)
+
+### Data Fetching & APIs
+- [Data Fetching in Next.js](#data-fetching-in-nextjs)
+- [Server Side Rendering (SSR)](#server-side-rendering-ssr)
+- [Static Site Generation (SSG)](#static-site-generation-ssg)
+- [Incremental Static Regeneration (ISR)](#incremental-static-regeneration-isr)
+- [Client-Side Data Fetching](#client-side-data-fetching)
+- [API Routes Creation](#api-routes-creation)
+- [Best Practices Summary](#best-practices-summary)
 
 ---
 
@@ -27,17 +53,16 @@ A comprehensive guide covering Next.js App Router folder structure and routing c
 Next.js uses a **file-system based router** where folders define routes.
 
 ### Basic Structure
-
 ```
 src/app/
-├── layout.jsx          # Root layout (required)
-├── page.jsx            # Home page (/)
-├── loading.jsx         # Loading UI
-├── error.jsx           # Error boundary
-├── not-found.jsx       # 404 page
-├── route.jsx           # API endpoints
-├── template.jsx        # Re-rendering layout
-├── default.jsx         # Fallback for parallel routes
+├── layout.tsx          # Root layout (required)
+├── page.tsx            # Home page (/)
+├── loading.tsx         # Loading UI
+├── error.tsx           # Error boundary
+├── not-found.tsx       # 404 page
+├── route.ts            # API endpoints
+├── template.tsx        # Re-rendering layout
+├── default.tsx         # Fallback for parallel routes
 ├── globals.css         # Global styles
 └── favicon.ico         # Site icon
 ```
@@ -46,36 +71,33 @@ src/app/
 
 ## 🔧 Special Files
 
-| File            | Purpose                                                                                                     |
-| --------------- | ----------------------------------------------------------------------------------------------------------- |
-| `layout.jsx`    | Defines the shared UI for a segment                                                                         |
-| `page.jsx`      | The unique UI of a route, making the folder publicly accessible                                             |
-| `loading.jsx`   | Shows a skeleton UI while a segment loads                                                                   |
-| `error.jsx`     | Defines an error boundary for a segment                                                                     |
-| `not-found.jsx` | Renders when a segment cannot be found                                                                      |
-| `route.jsx`     | Defines an API endpoint (for handling HTTP methods like GET/POST)                                           |
-| `template.jsx`  | Similar to a layout, but its state is destroyed and re-created upon navigation, enabling transition effects |
-| `default.jsx`   | Fallback for parallel routes                                                                                |
+| File | Purpose |
+|------|---------|
+| `layout.tsx` | Defines the shared UI for a segment |
+| `page.tsx` | The unique UI of a route, making the folder publicly accessible |
+| `loading.tsx` | Shows a skeleton UI while a segment loads |
+| `error.tsx` | Defines an error boundary for a segment |
+| `not-found.tsx` | Renders when a segment cannot be found |
+| `route.ts` | Defines an API endpoint (for handling HTTP methods like GET/POST) |
+| `template.tsx` | Similar to a layout, but its state is destroyed and re-created upon navigation |
+| `default.tsx` | Fallback for parallel routes |
 
 ---
 
 ## 🚀 App Routing
 
 ### Basic Route Creation
+Create a folder with `page.tsx` inside:
 
-Create a folder with `page.jsx` inside:
-
-**File:** `app/about/page.jsx` → **URL:** `/about`
-
-```jsx
+**File:** `app/about/page.tsx` → **URL:** `/about`
+```typescript
 export default function About() {
   return <h1>About Page</h1>;
 }
 ```
 
-**File:** `app/contact/page.jsx` → **URL:** `/contact`
-
-```jsx
+**File:** `app/contact/page.tsx` → **URL:** `/contact`
+```typescript
 export default function Contact() {
   return <h1>Contact Page</h1>;
 }
@@ -86,39 +108,24 @@ export default function Contact() {
 ## 🪆 Nested Routing
 
 ### Nested Layouts
-
 Create nested folders for nested layouts:
 
 ```
 app/
 ├── shop/
-│   ├── layout.jsx     # Shop layout
-│   ├── page.jsx       # /shop
+│   ├── layout.tsx     # Shop layout
+│   ├── page.tsx       # /shop
 │   └── products/
-│       ├── layout.jsx # Products layout
-│       └── page.jsx   # /shop/products
+│       ├── layout.tsx # Products layout
+│       └── page.tsx   # /shop/products
 ```
 
-**File:** `app/shop/layout.jsx`
-
-```jsx
-export default function ShopLayout({ children }) {
+**File:** `app/shop/layout.tsx`
+```typescript
+export default function ShopLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <h1>Shop Header</h1>
-      {children}
-    </div>
-  );
-}
-```
-
-**File:** `app/shop/products/layout.jsx`
-
-```jsx
-export default function ProductsLayout({ children }) {
-  return (
-    <div>
-      <nav>Products Navigation</nav>
       {children}
     </div>
   );
@@ -130,24 +137,33 @@ export default function ProductsLayout({ children }) {
 ## 🎯 Dynamic Routes
 
 ### Single Dynamic Segment
-
 Use `[folderName]` for dynamic routes:
 
-**File:** `app/users/[id]/page.jsx` → **URLs:** `/users/1`, `/users/123`
+**File:** `app/users/[id]/page.tsx` → **URLs:** `/users/1`, `/users/123`
+```typescript
+interface UserProfileProps {
+  params: {
+    id: string;
+  };
+}
 
-```jsx
-export default function UserProfile({ params }) {
+export default function UserProfile({ params }: UserProfileProps) {
   return <h1>User Profile: {params.id}</h1>;
 }
 ```
 
 ### Multiple Dynamic Segments
+**File:** `app/categories/[category]/products/[productId]/page.tsx`
 
-**File:** `app/categories/[category]/products/[productId]/page.jsx`  
-**URL:** `/categories/electronics/products/123`
+```typescript
+interface ProductPageProps {
+  params: {
+    category: string;
+    productId: string;
+  };
+}
 
-```jsx
-export default function ProductPage({ params }) {
+export default function ProductPage({ params }: ProductPageProps) {
   return (
     <div>
       <h1>Category: {params.category}</h1>
@@ -162,18 +178,18 @@ export default function ProductPage({ params }) {
 ## 📦 Catch-all Routes
 
 ### Required Catch-all Routes
-
 Use `[...folderName]` to catch all segments:
 
-**File:** `app/docs/[...slug]/page.jsx`  
-**Matches:**
+**File:** `app/docs/[...slug]/page.tsx`
 
-- `/docs/getting-started`
-- `/docs/getting-started/installation`
-- `/docs/api/routing`
+```typescript
+interface DocsPageProps {
+  params: {
+    slug: string[];
+  };
+}
 
-```jsx
-export default function DocsPage({ params }) {
+export default function DocsPage({ params }: DocsPageProps) {
   return (
     <div>
       <h1>Documentation</h1>
@@ -183,28 +199,22 @@ export default function DocsPage({ params }) {
 }
 ```
 
-**Access multiple segments as array:**
-
-```jsx
-// For /docs/api/routing
-params.slug; // ['api', 'routing']
-```
-
 ---
 
 ## 📦 Optional Catch-all Routes
 
 Use `[[...folderName]]` for optional catch-all:
 
-**File:** `app/blog/[[...slug]]/page.jsx`  
-**Matches:**
+**File:** `app/blog/[[...slug]]/page.tsx`
 
-- `/blog` (slug is undefined)
-- `/blog/2023`
-- `/blog/2023/react`
+```typescript
+interface BlogPageProps {
+  params: {
+    slug?: string[];
+  };
+}
 
-```jsx
-export default function BlogPage({ params }) {
+export default function BlogPage({ params }: BlogPageProps) {
   return (
     <div>
       <h1>Blog</h1>
@@ -223,93 +233,38 @@ export default function BlogPage({ params }) {
 ## 📂 Route Groups
 
 ### Organizing Routes without Affecting URL
-
 Use `(folderName)` for route groups:
 
 ```
 app/
 ├── (auth)/
 │   ├── login/
-│   │   └── page.jsx    # /login
+│   │   └── page.tsx    # /login
 │   └── register/
-│       └── page.jsx    # /register
+│       └── page.tsx    # /register
 ├── (marketing)/
 │   ├── about/
-│   │   └── page.jsx    # /about
+│   │   └── page.tsx    # /about
 │   └── contact/
-│       └── page.jsx    # /contact
-└── page.jsx            # /
+│       └── page.tsx    # /contact
+└── page.tsx            # /
 ```
-
-**Shared Layout for Group**  
-**File:** `app/(auth)/layout.jsx`
-
-```jsx
-export default function AuthLayout({ children }) {
-  return (
-    <div className="auth-layout">
-      <h2>Authentication</h2>
-      {children}
-    </div>
-  );
-}
-```
-
-### Benefits of Route Groups
-
-- ✅ Organize routes without affecting URL structure
-- ✅ Apply different layouts to groups of routes
-- ✅ Share components within groups
-- ✅ Better project organization
 
 ---
 
 ## 🔀 Parallel Routes
 
-Parallel routes allow you to render multiple pages in the same layout simultaneously based on different conditions.
+Parallel routes allow you to render multiple pages in the same layout simultaneously.
 
-### Structure
+**File:** `app/layout.tsx`
+```typescript
+interface LayoutProps {
+  children: React.ReactNode;
+  team: React.ReactNode;
+  analytics: React.ReactNode;
+}
 
-Use `@folderName` syntax for parallel routes:
-
-```
-app/
-├── @team/
-│   └── page.jsx
-├── @analytics/
-│   └── page.jsx
-├── layout.jsx
-└── page.jsx
-```
-
-**File:** `app/@team/page.jsx`
-
-```jsx
-import React from 'react';
-
-const page = () => {
-  return <div>This is team parallel route</div>;
-};
-
-export default page;
-```
-
-**File:** `app/@analytics/page.jsx`
-
-```jsx
-import React from 'react';
-
-const page = () => {
-  return <div>This is analytics parallel route</div>;
-};
-
-export default page;
-```
-
-**File:** `app/layout.jsx`
-
-```jsx
-export default function Layout({ children, team, analytics }) {
+export default function Layout({ children, team, analytics }: LayoutProps) {
   return (
     <div>
       <main>{children}</main>
@@ -320,26 +275,14 @@ export default function Layout({ children, team, analytics }) {
 }
 ```
 
-### How It Works
-
-- We can show different pages based on different conditions
-- Use `@` prefix for parallel route folders (e.g., `@team/`, `@analytics/`)
-- Access them as props in `layout.jsx`
-- Useful for dashboards, split views, and conditional rendering
-
 ---
 
 ## 🧭 Navigation
 
-Next.js provides multiple ways to navigate between routes.
-
 ### 1. Using `<Link>` Component
 
-The `<Link>` component is the primary way to navigate between routes in Next.js.
-
-**File:** `app/components/Navbar.jsx`
-
-```jsx
+**File:** `app/components/Navbar.tsx`
+```typescript
 import Link from 'next/link';
 
 export default function Navbar() {
@@ -348,54 +291,6 @@ export default function Navbar() {
       <Link href="/">Home</Link>
       <Link href="/about">About</Link>
       <Link href="/contact">Contact</Link>
-      <Link href="/users/123">User Profile</Link>
-    </nav>
-  );
-}
-```
-
-#### Link with Dynamic Routes
-
-```jsx
-import Link from 'next/link';
-
-export default function UserList() {
-  const users = [
-    { id: 1, name: 'John' },
-    { id: 2, name: 'Jane' },
-  ];
-
-  return (
-    <ul>
-      {users.map((user) => (
-        <li key={user.id}>
-          <Link href={`/users/${user.id}`}>{user.name}</Link>
-        </li>
-      ))}
-    </ul>
-  );
-}
-```
-
-#### Link with Active State
-
-```jsx
-'use client';
-
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-export default function Navbar() {
-  const pathname = usePathname();
-
-  return (
-    <nav>
-      <Link href="/" className={pathname === '/' ? 'active' : ''}>
-        Home
-      </Link>
-      <Link href="/about" className={pathname === '/about' ? 'active' : ''}>
-        About
-      </Link>
     </nav>
   );
 }
@@ -403,11 +298,7 @@ export default function Navbar() {
 
 ### 2. Using `useRouter` Hook
 
-The `useRouter` hook allows programmatic navigation (must use `'use client'`).
-
-**File:** `app/components/LoginButton.jsx`
-
-```jsx
+```typescript
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -416,7 +307,6 @@ export default function LoginButton() {
   const router = useRouter();
 
   const handleLogin = () => {
-    // Perform login logic
     router.push('/dashboard');
   };
 
@@ -424,51 +314,9 @@ export default function LoginButton() {
 }
 ```
 
-#### useRouter Methods
-
-```jsx
-'use client';
-
-import { useRouter } from 'next/navigation';
-
-export default function NavigationExample() {
-  const router = useRouter();
-
-  return (
-    <div>
-      {/* Navigate to a route */}
-      <button onClick={() => router.push('/about')}>Go to About</button>
-
-      {/* Replace current route (no history) */}
-      <button onClick={() => router.replace('/profile')}>
-        Replace with Profile
-      </button>
-
-      {/* Go back */}
-      <button onClick={() => router.back()}>Go Back</button>
-
-      {/* Go forward */}
-      <button onClick={() => router.forward()}>Go Forward</button>
-
-      {/* Refresh the page */}
-      <button onClick={() => router.refresh()}>Refresh</button>
-
-      {/* Prefetch a route */}
-      <button onClick={() => router.prefetch('/dashboard')}>
-        Prefetch Dashboard
-      </button>
-    </div>
-  );
-}
-```
-
 ### 3. Using `redirect()` Function
 
-Use `redirect()` for server-side redirects.
-
-**File:** `app/profile/page.jsx`
-
-```jsx
+```typescript
 import { redirect } from 'next/navigation';
 
 export default function ProfilePage() {
@@ -482,478 +330,809 @@ export default function ProfilePage() {
 }
 ```
 
-### Navigation Best Practices
-
-| Method       | Use Case                                       |
-| ------------ | ---------------------------------------------- |
-| `<Link>`     | Default navigation, SEO-friendly               |
-| `useRouter`  | Programmatic navigation, conditional redirects |
-| `redirect()` | Server-side redirects, authentication checks   |
-
 ---
 
 ## 🔤 Font Integration
 
-Next.js provides built-in font optimization with `next/font`.
+### Google Fonts
 
-### 1. Google Fonts
+**File:** `app/layout.tsx`
+```typescript
+import { Inter, Roboto } from 'next/font/google';
 
-**File:** `app/layout.jsx`
-
-```jsx
-import { Inter, Roboto, Poppins } from 'next/font/google';
-
-// Single font
-const inter = Inter({
+const inter = Inter({ 
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-inter',
 });
 
-// Multiple weights
-const roboto = Roboto({
+const roboto = Roboto({ 
   subsets: ['latin'],
   weight: ['300', '400', '500', '700'],
   variable: '--font-roboto',
 });
 
-// Variable font
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-poppins',
-});
-
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${roboto.variable}`}>{children}</body>
+      <body className={`${inter.variable} ${roboto.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }
-```
-
-**Use in CSS:**
-
-```css
-/* globals.css */
-body {
-  font-family: var(--font-inter);
-}
-
-h1 {
-  font-family: var(--font-roboto);
-}
-```
-
-### 2. Local Fonts
-
-**File:** `app/layout.jsx`
-
-```jsx
-import localFont from 'next/font/local';
-
-const myFont = localFont({
-  src: './fonts/my-font.woff2',
-  variable: '--font-my-font',
-  weight: '400',
-});
-
-// Multiple font files
-const customFont = localFont({
-  src: [
-    {
-      path: './fonts/custom-regular.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: './fonts/custom-bold.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-custom',
-});
-
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body className={myFont.className}>{children}</body>
-    </html>
-  );
-}
-```
-
-### 3. Font Usage Examples
-
-**Direct className:**
-
-```jsx
-import { Inter } from 'next/font/google';
-
-const inter = Inter({ subsets: ['latin'] });
-
-export default function Page() {
-  return (
-    <div className={inter.className}>
-      <h1>This uses Inter font</h1>
-    </div>
-  );
-}
-```
-
-**With Tailwind CSS:**
-
-```jsx
-// tailwind.config.js
-module.exports = {
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['var(--font-inter)'],
-        mono: ['var(--font-roboto-mono)'],
-      },
-    },
-  },
-};
 ```
 
 ---
 
 ## 🖼️ Image Integration
 
-Next.js provides the `<Image>` component for automatic image optimization.
+### Local Images
 
-### 1. Local Images
-
-**File:** `app/page.jsx`
-
-```jsx
+```typescript
 import Image from 'next/image';
-import profilePic from './profile.jpg'; // Import local image
+import profilePic from './profile.jpg';
 
 export default function Home() {
   return (
-    <div>
-      <Image
-        src={profilePic}
-        alt="Profile Picture"
-        width={500}
-        height={500}
-        priority // Load immediately (above the fold)
-      />
-    </div>
+    <Image
+      src={profilePic}
+      alt="Profile Picture"
+      width={500}
+      height={500}
+      priority
+    />
   );
 }
 ```
 
-### 2. Remote Images
+### Remote Images
 
-**File:** `app/page.jsx`
-
-```jsx
+```typescript
 import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div>
-      <Image
-        src="https://example.com/image.jpg"
-        alt="Remote Image"
-        width={800}
-        height={600}
-      />
-    </div>
+    <Image
+      src="https://example.com/image.jpg"
+      alt="Remote Image"
+      width={800}
+      height={600}
+    />
   );
-}
-```
-
-**Configure remote domains:**
-
-**File:** `next.config.js`
-
-```js
-module.exports = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'example.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-    ],
-  },
-};
-```
-
-### 3. Image Component Properties
-
-```jsx
-import Image from 'next/image';
-
-export default function ImageExample() {
-  return (
-    <div>
-      {/* Basic image */}
-      <Image
-        src="/images/photo.jpg"
-        alt="Description"
-        width={600}
-        height={400}
-      />
-
-      {/* Fill container (requires parent with position: relative) */}
-      <div style={{ position: 'relative', width: '100%', height: '400px' }}>
-        <Image
-          src="/images/banner.jpg"
-          alt="Banner"
-          fill
-          style={{ objectFit: 'cover' }}
-        />
-      </div>
-
-      {/* With quality */}
-      <Image
-        src="/images/hq-photo.jpg"
-        alt="High Quality"
-        width={800}
-        height={600}
-        quality={100} // 1-100, default is 75
-      />
-
-      {/* With placeholder blur */}
-      <Image
-        src="/images/photo.jpg"
-        alt="Photo with blur"
-        width={600}
-        height={400}
-        placeholder="blur"
-        blurDataURL="data:image/jpeg;base64,..."
-      />
-
-      {/* Responsive image */}
-      <Image
-        src="/images/responsive.jpg"
-        alt="Responsive"
-        width={800}
-        height={600}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      />
-
-      {/* Priority loading (LCP) */}
-      <Image
-        src="/images/hero.jpg"
-        alt="Hero"
-        width={1200}
-        height={600}
-        priority
-      />
-    </div>
-  );
-}
-```
-
-### 4. Image Optimization Features
-
-| Feature                    | Description                        |
-| -------------------------- | ---------------------------------- |
-| **Automatic optimization** | Images are optimized on-demand     |
-| **Lazy loading**           | Images load as they enter viewport |
-| **Responsive**             | Automatic srcset generation        |
-| **Format conversion**      | WebP/AVIF support                  |
-| **Blur placeholder**       | Show blur while loading            |
-| **Priority loading**       | Load critical images first         |
-
-### 5. Background Image Example
-
-```jsx
-import Image from 'next/image';
-
-export default function Hero() {
-  return (
-    <div style={{ position: 'relative', height: '500px' }}>
-      <Image
-        src="/images/hero-bg.jpg"
-        alt="Background"
-        fill
-        style={{
-          objectFit: 'cover',
-          zIndex: -1,
-        }}
-        quality={90}
-        priority
-      />
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        <h1>Hero Content</h1>
-      </div>
-    </div>
-  );
-}
-```
-
-### 6. Image in Public Folder
-
-Place images in `public` folder:
-
-```
-public/
-├── images/
-│   ├── logo.png
-│   └── avatar.jpg
-└── favicon.ico
-```
-
-**Usage:**
-
-```jsx
-import Image from 'next/image';
-
-export default function Logo() {
-  return <Image src="/images/logo.png" alt="Logo" width={200} height={50} />;
 }
 ```
 
 ---
 
-## 🛠️ Practice Setup
+## 🎯 What is TypeScript?
 
-### Minimal Setup for Learning
+- **TypeScript is a strongly typed, object-oriented, compiled programming language developed by Microsoft.**
+- **It is a superset of JavaScript**, meaning that all valid JavaScript code is also valid TypeScript code.
+- **The primary addition TypeScript brings to JavaScript is static typing**, allowing developers to define the types of variables, function parameters, and return values.
 
-Create these files in the `app` folder (not in nested folders):
+### Key Benefits
+✅ Catch errors at compile time  
+✅ Better IDE support and autocomplete  
+✅ Improved code documentation  
+✅ Enhanced code maintainability  
 
-#### 1. `app/layout.jsx`
+---
 
-```jsx
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+## 🚀 Installation & Setup
+
+### Install TypeScript
+```bash
+npm i typescript -D
+```
+
+### Initialize TypeScript Configuration
+```bash
+npx tsc --init
+```
+
+---
+
+## 📝 Basic Types
+
+```typescript
+let age: number = 25;
+let name: string = "Aman";
+let isOnline: boolean = true;
+let scores: number[] = [10, 20, 30];
+let user: [string, number] = ["Aman", 23];  // Tuple
+```
+
+---
+
+## 📊 Arrays & Tuples
+
+### Arrays
+```typescript
+let scores: number[] = [10, 20, 30];
+let names: Array<string> = ["Aman", "Ravi"];
+```
+
+### Tuples
+Fixed-length, ordered arrays with specific types.
+```typescript
+let user: [string, number] = ["Aman", 23];
+```
+
+---
+
+## 🏷️ Type Annotations
+
+```typescript
+let username: string = "John Doe";
+let username: string = 5434523; // ❌ Error
+```
+
+---
+
+## 🔍 Type Declaration & Type Inference
+
+### Explicit Declaration
+```typescript
+let count: number = 5;
+```
+
+### Type Inference
+```typescript
+let age = 20;           // inferred number
+let city = "Delhi";     // inferred string
+```
+
+---
+
+## 🔀 Union Types
+
+```typescript
+let topseller: (string | number)[] = ["laptop", "iphone", 42];
+```
+
+---
+
+## 🔧 Functions
+
+### Basic Functions
+```typescript
+function add(a: number, b: number): number {
+  return a + b;
 }
 ```
 
-#### 2. `app/page.jsx`
+### Optional & Default Parameters
+```typescript
+function greet(name: string, prefix?: string): string {
+  return `${prefix}, ${name}`;
+}
 
-```jsx
-export default function Home() {
-  return <h1>Home Page</h1>;
+function greet2(name: string, prefix: string = "Hi"): string {
+  return `${prefix}, ${name}`;
 }
 ```
 
-#### 3. `app/loading.jsx`
+---
 
-```jsx
-export default function Loading() {
-  return <div>Loading...</div>;
+## 📦 Objects & Interfaces
+
+```typescript
+interface User {
+  id: number;
+  name: string;
+  email?: string;        // optional
+  readonly role: string; // readonly
+}
+
+const u: User = { id: 1, name: "Aman", role: "Admin" };
+```
+
+### Extending Interfaces
+```typescript
+interface Employee extends User {
+  salary: number;
 }
 ```
 
-#### 4. `app/error.jsx`
+---
 
-```jsx
-'use client';
+## 🎭 Type Aliases
 
-export default function Error({ error, reset }) {
+```typescript
+type ID = number | string;
+type Status = "success" | "error" | "loading";
+
+let userId: ID = 4;
+let state: Status = "success";
+```
+
+### Function Signatures
+```typescript
+type MathFn = (a: number, b: number) => number;
+
+const divide: MathFn = (a, b) => a / b;
+```
+
+---
+
+## ⚖️ Difference between Type & Interface
+
+| Feature | Type | Interface |
+|---------|------|-----------|
+| **Combine** | ✅ & operator | ✅ extends |
+| **Merge** | ❌ | ✅ |
+| **Union** | ✅ | ❌ |
+| **Use-case** | primitives, unions, functions | object shapes |
+
+---
+
+## 🔗 Union & Intersection Types
+
+### Union Types
+```typescript
+type Response = "ok" | "fail" | "loading";
+let res: Response = "ok";
+```
+
+### Intersection Types
+```typescript
+type Person = { name: string };
+type Contact = { phone: string };
+type Full = Person & Contact;
+
+const user: Full = { name: "Aman", phone: "123" };
+```
+
+---
+
+## 🎨 Enums
+
+```typescript
+enum Role {
+  Admin = "ADMIN",
+  User = "USER",
+  Guest = "GUEST"
+}
+
+enum HttpStatusCode {
+  OK = 200,
+  NotFound = 404
+}
+```
+
+---
+
+## 🔮 Generics
+
+```typescript
+function identity<T>(value: T): T {
+  return value;
+}
+
+const n = identity(10);
+const s = identity("hello");
+```
+
+### Generic Interface
+```typescript
+interface Box<T> { 
+  value: T; 
+}
+
+const stringBox: Box<string> = { value: "Hi" };
+```
+
+---
+
+## 🌐 Global Declaration
+
+### File: `src/types.d.ts`
+```typescript
+declare global {
+  interface Window { 
+    appVersion: string; 
+  }
+  
+  type ApiResponse<T> = {
+    data: T;
+    error?: string;
+  };
+}
+
+export {};
+```
+
+---
+
+## ⚛️ React with TypeScript
+
+### Props
+```typescript
+type ButtonProps = {
+  label: string;
+  onClick: () => void;
+};
+
+const Button: React.FC<ButtonProps> = ({ label, onClick }) => 
+  <button onClick={onClick}>{label}</button>;
+```
+
+### useState / useRef
+```typescript
+const [count, setCount] = useState<number>(0);
+const inputRef = useRef<HTMLInputElement>(null);
+```
+
+---
+
+## 📋 React Types Reference
+
+| Type | Description | Common Use |
+|------|-------------|------------|
+| `ReactNode` | Anything React can render | Children props |
+| `ReactElement` | A single React element instance | One element prop |
+| `JSX.Element` | Return type of component | Function component return |
+| `ReactChild` | string, number, ReactElement | Strict single child |
+| `ReactComponentType<P>` | Any component with props P | Dynamic rendering |
+| `React.FC<P>` | Function Component type | Components with children |
+
+---
+
+## 📡 Data Fetching in Next.js
+
+**"Server ya API se data laana taaki page render ho sake."**
+
+Next.js me data fetching ke **3 major tareeke** hote hain (App Router ke context me):
+
+| Type | Full Form | Kab Data Fetch Hota Hai | Use Case |
+|------|-----------|-------------------------|----------|
+| **SSR** | Server Side Rendering | Har request pe | Dynamic pages (dashboard, user profile) |
+| **SSG** | Static Site Generation | Build time pe | Blogs, landing pages |
+| **ISR** | Incremental Static Regeneration | Build time + background me re-generate | News, e-commerce, changing content |
+
+### 🔷 Simple Analogy
+
+| Type | Example Analogy |
+|------|-----------------|
+| **SSR** | Har baar taja khana banana 🍳 (Fresh food every time) |
+| **SSG** | Ek baar bana ke store karna 🏪 (Make once, store it) |
+| **ISR** | Store kiya hua khana, lekin har kuch der baad naya bana dena 🔄 (Stored food, but remake after some time) |
+
+### ⚙️ Next.js 15 (App Router) me ye kaise karte hain?
+
+Ab hum `getServerSideProps` ya `getStaticProps` nahi likhte.  
+Uski jagah **fetch()** ke options se control karte hain:
+
+| Type | fetch Option | Updates? | Example Use |
+|------|--------------|----------|-------------|
+| **SSR** | `{ cache: 'no-store' }` | Every reload | Dashboard, profile |
+| **SSG** | `{ cache: 'force-cache' }` (default) | Never | Blogs, docs |
+| **ISR** | `{ next: { revalidate: X } }` | Every X seconds | Product pages, news |
+
+---
+
+## 🔄 Server Side Rendering (SSR)
+
+Data is fetched on **every request** on the server.
+
+**Har request pe fresh data laata hai**
+
+### Example: User Dashboard
+**File:** `app/ssr/page.tsx`
+```typescript
+interface Post {
+  id: number;
+  title: string;
+}
+
+export default async function SSRPage() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts/1', {
+    cache: 'no-store' // disables caching
+  });
+  const data: Post = await res.json();
+
   return (
     <div>
-      <h2>Something went wrong!</h2>
-      <button onClick={() => reset()}>Try again</button>
+      <h1>Server Side Rendering (SSR)</h1>
+      <p>{data.title}</p>
+      <p>Rendered at: {new Date().toLocaleTimeString()}</p>
     </div>
   );
 }
 ```
 
-#### 5. `app/not-found.jsx`
+### 📌 Explanation:
+- **cache: 'no-store'** → har request pe API call hoti hai
+- Page refresh karne pe time badalta dikhega → proof that it's SSR
 
-```jsx
-export default function NotFound() {
-  return <h2>404 - Page Not Found</h2>;
+**Use Cases:**
+- User dashboards
+- Real-time data
+- Personalized content
+- Dynamic content that changes frequently
+
+---
+
+## 🏗️ Static Site Generation (SSG)
+
+Data is fetched at **build time** and reused for every request.
+
+**Build time pe data fetch hota hai (ek hi baar)**
+
+### Example: Blog Posts
+**File:** `app/ssg/page.tsx`
+```typescript
+interface Post {
+  id: number;
+  title: string;
+}
+
+export default async function SSGPage() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts/1', {
+    cache: 'force-cache' // default behavior
+  });
+  const data: Post = await res.json();
+
+  return (
+    <div>
+      <h1>Static Site Generation (SSG)</h1>
+      <p>{data.title}</p>
+      <p>Built at: {new Date().toLocaleTimeString()}</p>
+    </div>
+  );
 }
 ```
 
-#### 6. `app/route.jsx`
+### 📌 Explanation:
+- Ye page **build ke time** render hota hai
+- Refresh karne pe **same time** rahega (static content)
 
-```jsx
+**Use Cases:**
+- Blog posts
+- Documentation
+- Landing pages
+- Marketing pages
+- Content that rarely changes
+
+---
+
+## ⚡ Incremental Static Regeneration (ISR)
+
+Pages are generated at **build time** but can be **re-generated in the background**.
+
+**Static page banta hai, lekin background me auto refresh hota hai**
+
+### Example: Product Listing
+**File:** `app/isr/page.tsx`
+```typescript
+interface Post {
+  id: number;
+  title: string;
+}
+
+export default async function ISRPage() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts/1', {
+    next: { revalidate: 10 } // 10 seconds ke baad background me update
+  });
+  const data: Post = await res.json();
+
+  return (
+    <div>
+      <h1>Incremental Static Regeneration (ISR)</h1>
+      <p>{data.title}</p>
+      <p>Generated at: {new Date().toLocaleTimeString()}</p>
+    </div>
+  );
+}
+```
+
+### 📌 Explanation:
+- Ye page **static** hai, lekin **10 seconds** ke baad Next.js background me naya version bana lega
+- Refresh karte raho — 10 sec baad "Rendered at" time change ho jayega (auto regeneration)
+
+**Use Cases:**
+- E-commerce product listings
+- News websites
+- Social media feeds
+- Content that updates periodically
+
+---
+
+## 💻 Client-Side Data Fetching
+
+Fetch data on the client side using hooks.
+
+### Example: Search Feature
+**File:** `app/components/Search.tsx`
+```typescript
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface SearchResult {
+  id: number;
+  title: string;
+}
+
+export default function Search() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!query) {
+      setResults([]);
+      return;
+    }
+
+    const fetchResults = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/search?q=${query}`);
+        const data = await res.json();
+        setResults(data);
+      } catch (error) {
+        console.error('Search failed:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const debounce = setTimeout(fetchResults, 300);
+    return () => clearTimeout(debounce);
+  }, [query]);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search..."
+      />
+      {loading && <p>Loading...</p>}
+      <ul>
+        {results.map((result) => (
+          <li key={result.id}>{result.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+**Use Cases:**
+- Search functionality
+- Filters and sorting
+- Interactive dashboards
+- Real-time updates
+
+---
+
+## 🔌 API Routes Creation
+
+Create backend APIs directly in Next.js.
+
+### Basic GET API
+**File:** `app/api/users/route.ts`
+```typescript
+import { NextResponse } from 'next/server';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+const users: User[] = [
+  { id: 1, name: 'John Doe', email: 'john@example.com' },
+  { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+];
+
 export async function GET() {
-  return Response.json({ message: 'Hello from API' });
+  return NextResponse.json(users);
 }
 ```
 
-#### 7. `app/template.jsx`
+### POST API with Validation
+**File:** `app/api/users/route.ts`
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
 
-```jsx
-export default function Template({ children }) {
-  return <div>{children}</div>;
+interface CreateUserBody {
+  name: string;
+  email: string;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body: CreateUserBody = await request.json();
+    
+    // Validation
+    if (!body.name || !body.email) {
+      return NextResponse.json(
+        { error: 'Name and email are required' },
+        { status: 400 }
+      );
+    }
+
+    // Create user logic here
+    const newUser = {
+      id: Date.now(),
+      name: body.name,
+      email: body.email,
+    };
+
+    return NextResponse.json(newUser, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Invalid request body' },
+      { status: 400 }
+    );
+  }
 }
 ```
 
-#### 8. `app/default.jsx`
+### Dynamic API Route
+**File:** `app/api/users/[id]/route.ts`
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
 
-```jsx
-export default function Default() {
-  return <div>Default Parallel Route</div>;
+interface RouteParams {
+  params: {
+    id: string;
+  };
+}
+
+export async function GET(
+  request: NextRequest,
+  { params }: RouteParams
+) {
+  const userId = params.id;
+  
+  // Fetch user by ID
+  const user = {
+    id: userId,
+    name: 'John Doe',
+    email: 'john@example.com',
+  };
+
+  return NextResponse.json(user);
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: RouteParams
+) {
+  const userId = params.id;
+  
+  // Delete user logic here
+  
+  return NextResponse.json(
+    { message: `User ${userId} deleted` },
+    { status: 200 }
+  );
 }
 ```
+
+### API with Database Example
+**File:** `app/api/posts/route.ts`
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+// import { db } from '@/lib/db'; // Your database instance
+
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  authorId: number;
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    // const posts = await db.post.findMany();
+    const posts: Post[] = []; // Replace with actual DB query
+    
+    return NextResponse.json(posts);
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to fetch posts' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    
+    // const newPost = await db.post.create({
+    //   data: body
+    // });
+    
+    const newPost: Post = {
+      id: Date.now(),
+      ...body,
+    };
+
+    return NextResponse.json(newPost, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to create post' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+---
+
+## ✅ Best Practices Summary
+
+### Data Fetching
+1. **SSR** (`cache: 'no-store'`) → Use for dynamic, personalized content that changes on every request
+2. **SSG** (`cache: 'force-cache'`) → Use for static content that rarely changes
+3. **ISR** (`next: { revalidate: X }`) → Use for content that updates periodically (every X seconds)
+4. **Client-side** → Use for interactive features and real-time updates
+
+### 📊 Summary Table
+
+| Concept | Data Fetch Time | fetch Option | Updates? | Example Use |
+|---------|----------------|--------------|----------|-------------|
+| **SSR** | On every request | `{ cache: 'no-store' }` | Every reload | Dashboard, profile |
+| **SSG** | At build time | `{ cache: 'force-cache' }` | Never | Blogs, docs |
+| **ISR** | Build + background regenerate | `{ next: { revalidate: X } }` | Every X seconds | Product pages, news |
+
+### TypeScript
+1. **children** → use `React.ReactNode`
+2. **element prop** → use `React.ReactElement`
+3. **component return type** → use `JSX.Element`
+4. **dynamic component as prop** → use `React.ComponentType<P>`
+5. **multiple possible types** → use `ReactNode | null`
+
+### API Routes
+1. Always validate input data
+2. Use proper HTTP status codes
+3. Handle errors gracefully
+4. Type your request and response bodies
+5. Use TypeScript interfaces for data structures
 
 ---
 
 ## 📝 Key Points to Remember
 
+### Next.js
 - ✅ Folders define routes, files define UI
-- ✅ `page.jsx` is required to make a route accessible
-- ✅ `layout.jsx` wraps child segments and preserves state
+- ✅ `page.tsx` is required to make a route accessible
+- ✅ `layout.tsx` wraps child segments and preserves state
 - ✅ Dynamic segments use `[paramName]` syntax
 - ✅ Route groups `(groupName)` don't affect URLs
-- ✅ Catch-all routes capture multiple path segments
-- ✅ Parallel routes use `@folderName` syntax
+- ✅ Use `<Link>` for client-side navigation
+- ✅ Use `useRouter` for programmatic navigation
+
+### TypeScript
+- ✅ TypeScript is a **superset of JavaScript** with static typing
+- ✅ Use **type annotations** to catch errors at compile time
+- ✅ **Interfaces** define object shapes and can be extended
+- ✅ **Type aliases** create reusable custom types
+- ✅ **Generics** provide reusable, type-safe code
+
+### Data Fetching
+- ✅ **SSR**: Fetch on every request (dynamic content)
+- ✅ **SSG**: Fetch at build time (static content)
+- ✅ **ISR**: Fetch at build + revalidate (periodic updates)
+- ✅ **Client-side**: Fetch in browser (interactive features)
 
 ---
 
-## 🌳 Example Project Structure
-
-```
-app/
-├── (auth)/
-│   ├── login/page.jsx
-│   └── register/page.jsx
-├── (dashboard)/
-│   ├── layout.jsx
-│   ├── page.jsx
-│   ├── @team/
-│   │   └── page.jsx
-│   ├── @analytics/
-│   │   └── page.jsx
-│   └── settings/
-│       └── page.jsx
-├── shop/
-│   ├── [category]/
-│   │   └── page.jsx
-│   └── products/
-│       └── [...slug]/
-│           └── page.jsx
-├── api/
-│   └── users/
-│       └── route.jsx
-├── layout.jsx
-├── page.jsx
-├── loading.jsx
-├── error.jsx
-└── not-found.jsx
-```
-
----
-
-## 🎓 Learning Resources
+## 📚 Resources
 
 - [Next.js Documentation](https://nextjs.org/docs)
-- [App Router Guide](https://nextjs.org/docs/app)
-- [Routing Fundamentals](https://nextjs.org/docs/app/building-your-application/routing)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
+- [Next.js Data Fetching](https://nextjs.org/docs/app/building-your-application/data-fetching)
 
 ---
 
-Made with ❤️ By &copy;Bhanu Pratap Patkar while learning Next.js with Typescript
+Made with ❤️ by ©Bhanu Pratap Patkar while learning Next.js with TypeScript
