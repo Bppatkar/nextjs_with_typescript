@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import connectDB from './db';
 import User from '@/app/model/user.model';
 import bcrypt from 'bcryptjs';
+import Google from 'next-auth/providers/google';
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -47,6 +48,12 @@ const authOptions: NextAuthOptions = {
           image: existingUser?.image,
         };
       },
+    }),
+
+    //? Google login
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
   callbacks: {
