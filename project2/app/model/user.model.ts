@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 
 interface Iuser {
   _id?: mongoose.Types.ObjectId;
-  name?: string;
-  image?: string;
+  name: string;
+  image: string;
   email: string;
-  password: string;
+  password?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -16,9 +16,6 @@ const userSchema = new mongoose.Schema<Iuser>(
       type: String,
       required: true,
     },
-    image: {
-      type: String,
-    },
     email: {
       type: String,
       required: true,
@@ -26,7 +23,10 @@ const userSchema = new mongoose.Schema<Iuser>(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
+    },
+    image: {
+      type: String,
     },
   },
   { timestamps: true }

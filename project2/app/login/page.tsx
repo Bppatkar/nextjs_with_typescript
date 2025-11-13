@@ -7,8 +7,8 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  const session = useSession();
-  console.log(session?.data?.user);
+  // const session = useSession();
+  // console.log(session?.data?.user);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();

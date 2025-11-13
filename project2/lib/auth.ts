@@ -25,6 +25,7 @@ const authOptions: NextAuthOptions = {
         const password = credentials?.password;
 
         if (!email || !password) {
+          console.log('❌ Email or password missing');
           throw new Error('Email and Password not found');
         }
 
@@ -52,11 +53,25 @@ const authOptions: NextAuthOptions = {
 
     //? Google login
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   callbacks: {
+    async signIn({ account, user }) {
+      if (account?.provider == 'google') {
+        await connectDB();
+        let existUser = await User.findOne({ email: user?.email });
+        if (!existUser) {
+          existUser = await User.create({
+            name: user.name,
+            email: user.email,
+          });
+        }
+        user.id = existUser._id as string;
+      }
+      return true;
+    },
     // callback mein functions  hote hai ,which is called while signin or signout etc funcs
     // token ke ander user details dal rahe
     async jwt({ token, user }) {
